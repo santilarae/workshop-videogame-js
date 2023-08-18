@@ -5,8 +5,16 @@ let canvaSize;
 let elementSize;
 
 function startGame() {
-  for (let i = 0; i < 10; i++) {
-    game.fillText(emojis["X"], elementSize * i, 0);
+  const mapArr = maps[2].trim().replaceAll(" ", "").split("\n");
+
+  for (let row = 0; row < mapArr.length; row++) {
+    for (let col = 0; col < mapArr[row].length; col++) {
+      game.fillText(
+        emojis[mapArr[row][col]],
+        elementSize * col,
+        elementSize * row
+      );
+    }
   }
 }
 
