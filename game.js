@@ -5,17 +5,12 @@ let canvaSize;
 let elementSize;
 
 function startGame() {
-  const mapArr = maps[2].trim().replaceAll(" ", "").split("\n");
-
-  for (let row = 0; row < mapArr.length; row++) {
-    for (let col = 0; col < mapArr[row].length; col++) {
-      game.fillText(
-        emojis[mapArr[row][col]],
-        elementSize * col,
-        elementSize * row
-      );
-    }
-  }
+  const mapArr = maps[0].match(/[IXO\-]+/g).map((col) => col.split(""));
+  mapArr.forEach((row, y) => {
+    row.forEach((obj, x) => {
+      game.fillText(emojis[obj], elementSize * x, elementSize * y);
+    });
+  });
 }
 
 function setCanvasSize() {
