@@ -8,31 +8,25 @@ const btnRight = document.querySelector("button#right");
 let canvaSize;
 let elementSize;
 
-const moveUp = () => console.log("Arriba");
-const moveDown = () => console.log("Abajo");
-const moveLeft = () => console.log("Izquierda");
-const moveRight = () => console.log("Derecha");
-
-const moveByKey = (e) => {
-  if (e.key === "ArrowUp") moveUp();
-  if (e.key === "ArrowDown") moveDown();
-  if (e.key === "ArrowLeft") moveLeft();
-  if (e.key === "ArrowRight") moveRight();
+const playerPosition = {
+  x: undefined,
+  y: undefined,
 };
-
-btnUp.addEventListener("click", moveUp);
-btnDown.addEventListener("click", moveDown);
-btnLeft.addEventListener("click", moveLeft);
-btnRight.addEventListener("click", moveRight);
-window.addEventListener("keyup", moveByKey);
 
 function startGame() {
   const mapArr = maps[0].match(/[IXO\-]+/g).map((col) => col.split(""));
   mapArr.forEach((row, y) => {
     row.forEach((obj, x) => {
-      game.fillText(emojis[obj], elementSize * x, elementSize * y);
+      const posiX = elementSize * x;
+      const posiY = elementSize * y;
+      game.fillText(emojis[obj], posiX, posiY);
+      if (obj === "O") {
+        playerPosition.x = posiX;
+        playerPosition.y = posiY;
+      }
     });
   });
+  movePlayer();
 }
 
 function setCanvasSize() {
@@ -49,5 +43,38 @@ function setCanvasSize() {
   startGame();
 }
 
+function movePlayer() {
+  game.fillText(emojis["PLAYER"], playerPosition.x, playerPosition.y);
+}
+
+function moveUp() {
+  playerPosition.y -= elementSize;
+  movePlayer();
+}
+function moveDown() {
+  playerPosition.y += elementSize;
+  movePlayer();
+}
+function moveLeft() {
+  playerPosition.x -= elementSize;
+  movePlayer();
+}
+function moveRight() {
+  playerPosition.x += elementSize;
+  movePlayer();
+}
+
+function moveByKey(e) {
+  if (e.key === "ArrowUp") moveUp();
+  if (e.key === "ArrowDown") moveDown();
+  if (e.key === "ArrowLeft") moveLeft();
+  if (e.key === "ArrowRight") moveRight();
+}
+
 window.addEventListener("resize", setCanvasSize);
 window.addEventListener("load", setCanvasSize);
+btnUp.addEventListener("click", moveUp);
+btnDown.addEventListener("click", moveDown);
+btnLeft.addEventListener("click", moveLeft);
+btnRight.addEventListener("click", moveRight);
+window.addEventListener("keyup", moveByKey);
