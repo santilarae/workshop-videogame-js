@@ -4,6 +4,7 @@ const btnUp = document.querySelector("button#up");
 const btnDown = document.querySelector("button#down");
 const btnLeft = document.querySelector("button#left");
 const btnRight = document.querySelector("button#right");
+const spanLives = document.querySelector("span#lives");
 
 let canvaSize;
 let elementSize;
@@ -31,8 +32,11 @@ function startGame() {
   }
 
   const mapArr = map.match(/[IXO\-]+/g).map((col) => col.split(""));
+  
   enemyPositions = [];
+  showLives()
   game.clearRect(0, 0, canvaSize, canvaSize);
+
   mapArr.forEach((row, y) => {
     row.forEach((obj, x) => {
       const posiX = elementSize * x;
@@ -67,6 +71,10 @@ function setCanvasSize() {
   game.textAlign = "start";
   game.textBaseline = "top";
   startGame();
+}
+
+function showLives(){
+  spanLives.innerHTML = emojis['HEART'].repeat(lives)
 }
 
 function levelWin() {
