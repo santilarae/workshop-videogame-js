@@ -7,14 +7,31 @@ const btnRight = document.querySelector("button#right");
 
 let canvaSize;
 let elementSize;
+let level = 0;
+let lives = 3;
 
 const playerPosition = {
   x: undefined,
   y: undefined,
 };
 
+const gifPosition = {
+  x: undefined,
+  y: undefined,
+};
+
+let enemyPositions = [];
+
 function startGame() {
-  const mapArr = maps[0].match(/[IXO\-]+/g).map((col) => col.split(""));
+  const map = maps[level];
+
+  if (!map) {
+    gameWin();
+    return;
+  }
+
+  const mapArr = map.match(/[IXO\-]+/g).map((col) => col.split(""));
+  enemyPositions = [];
   game.clearRect(0, 0, canvaSize, canvaSize);
   mapArr.forEach((row, y) => {
     row.forEach((obj, x) => {
@@ -24,18 +41,15 @@ function startGame() {
       if (obj === "O") {
         playerPosition.x = playerPosition.x ?? x;
         playerPosition.y = playerPosition.y ?? y;
+      } else if (obj === "I") {
+        gifPosition.x = x;
+        gifPosition.y = y;
+      } else if (obj === "X") {
+        enemyPositions.push({
+          x,
+          y,
+        });
       }
-      if (obj === "I") {
-        if(y === playerPosition.y &&  x === playerPosition.x){
-          console.log('win')
-        }
-      }
-      if (obj === "X") {
-        if(y === playerPosition.y &&  x === playerPosition.x){
-          console.log('colision')
-        }
-      }
-
     });
   });
   movePlayer();
@@ -55,7 +69,46 @@ function setCanvasSize() {
   startGame();
 }
 
+function levelWin() {
+  level++;
+  playerPosition.x = undefined;
+  playerPosition.y = undefined;
+  startGame();
+}
+
+function onEnemyCollision() {
+  lives--;
+  if (lives <= 0) {
+    lives = 3;
+    level = 0;
+  }
+
+  playerPosition.x = undefined;
+  playerPosition.y = undefined;
+
+  startGame();
+}
+
+function gameWin() {
+  console.log("Ganaste");
+}
+
 function movePlayer() {
+  const gifCollision =
+    gifPosition.x === playerPosition.x && gifPosition.y === playerPosition.y;
+
+  const enemyCollision = enemyPositions.some(
+    (enemy) => enemy.x === playerPosition.x && enemy.y === playerPosition.y
+  );
+
+  if (gifCollision) {
+    levelWin();
+  }
+
+  if (enemyCollision) {
+    onEnemyCollision();
+  }
+
   game.fillText(
     emojis["PLAYER"],
     elementSize * playerPosition.x,
