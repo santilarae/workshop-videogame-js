@@ -15,15 +15,27 @@ const playerPosition = {
 
 function startGame() {
   const mapArr = maps[0].match(/[IXO\-]+/g).map((col) => col.split(""));
+  game.clearRect(0, 0, canvaSize, canvaSize);
   mapArr.forEach((row, y) => {
     row.forEach((obj, x) => {
       const posiX = elementSize * x;
       const posiY = elementSize * y;
       game.fillText(emojis[obj], posiX, posiY);
       if (obj === "O") {
-        playerPosition.x = posiX;
-        playerPosition.y = posiY;
+        playerPosition.x = playerPosition.x ?? x;
+        playerPosition.y = playerPosition.y ?? y;
       }
+      if (obj === "I") {
+        if(y === playerPosition.y &&  x === playerPosition.x){
+          console.log('win')
+        }
+      }
+      if (obj === "X") {
+        if(y === playerPosition.y &&  x === playerPosition.x){
+          console.log('colision')
+        }
+      }
+
     });
   });
   movePlayer();
@@ -44,24 +56,36 @@ function setCanvasSize() {
 }
 
 function movePlayer() {
-  game.fillText(emojis["PLAYER"], playerPosition.x, playerPosition.y);
+  game.fillText(
+    emojis["PLAYER"],
+    elementSize * playerPosition.x,
+    elementSize * playerPosition.y
+  );
 }
 
 function moveUp() {
-  playerPosition.y -= elementSize;
-  movePlayer();
+  if (playerPosition.y > 0) {
+    playerPosition.y -= 1;
+    startGame();
+  }
 }
 function moveDown() {
-  playerPosition.y += elementSize;
-  movePlayer();
+  if (playerPosition.y < 9) {
+    playerPosition.y += 1;
+    startGame();
+  }
 }
 function moveLeft() {
-  playerPosition.x -= elementSize;
-  movePlayer();
+  if (playerPosition.x > 0) {
+    playerPosition.x -= 1;
+    startGame();
+  }
 }
 function moveRight() {
-  playerPosition.x += elementSize;
-  movePlayer();
+  if (playerPosition.x < 9) {
+    playerPosition.x += 1;
+    startGame();
+  }
 }
 
 function moveByKey(e) {
